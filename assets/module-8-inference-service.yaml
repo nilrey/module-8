@@ -1,0 +1,26 @@
+apiVersion: serving.kserve.io/v1beta1
+kind: InferenceService
+metadata:
+  name: taxi-price-predictor
+  namespace: r-mlops-k8s-9-1-3-22209764
+  annotations:
+    serving.kserve.io/autoscaling-class: keda
+    serving.kserve.io/metric: rps
+    serving.kserve.io/target-rps: "50"
+    serving.kserve.io/scale-utilization: "70"
+    autoscaling.knative.dev/maxScale: "5"
+    autoscaling.knative.dev/minScale: "1"
+    autoscaling.knative.dev/initialScale: "2"
+spec:
+  predictor:
+    serviceAccountName: mlops-sa
+    sklearn:
+      protocolVersion: v2
+      storageUri: s3://r-mlops-bucket-9-1-3-22209764/model_dir/model.pkl
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi

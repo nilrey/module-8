@@ -3,7 +3,7 @@ ignore_missing_imports = true
 mypy_path = ["src/services"]
 
 [project]
-name = "Taxi Price Predictor"
+name = "taxi-price-predictor"
 version = "0.0.1"
 description = "MLOps проект для работы с CI/CD"
 requires-python = ">=3.12"
