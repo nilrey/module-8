@@ -1,88 +1,28 @@
 # Module 8 Сервис рекомендации цен на поездку такси.
 
-## Структура проекта
-```bash
-├── src - сервис для запуска API и обучения модели
-```
+## Описание проекта
 
-## Быстрый старт
+В проекте реализован процесс предварительной обработки данных в Airflow и запуск экспериментов в пайплайне ClearML для выбора наилучшей модели на основе сравнения метрики RMSE.
+Первым шагом в проекте идет реализация ETL‑процесса в Airflow для подготовки данных к обучению модели и сохранению их в S3 хранилище. После этого в ClearML настроен пайплайн с экспериментами для получения модели с наилучшей точностью и сохранением модели в S3, работа моделей основана на подготовленных данных из S3 хранилиа.
 
-- **Требования**: Python 3.12 (см. `.python-version`), macOS/zsh
-- **Путь проекта**: `<path_to_project>`
+## Структура репозитория 
+- final_task_dag.py - конфигурация пайплайна реализация ETL‑процесса в Airflow
+- pipeline.py - конфигурация пайплайна по работе с моделями в ClearML
+- README.md - документация проекта
+- pyproject.toml - зависимости и метаданные проекта Python
 
-### 1) Установка окружения
-```bash
-cd <path_to_project>
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-pip install -r requirements.txt
-```
 
-### 2) Запуск API
-Вариант A (рекомендуется, с авто‑перезапуском):
-```bash
-cd <path_to_project>
-source .venv/bin/activate
-uvicorn main:app --app-dir <path_to_project>/src/service --host 0.0.0.0 --port 32000 --reload
-```
 
-Вариант B (через модуль Python):
-```bash
-cd <path_to_project>
-source .venv/bin/activate
-python -m src.service.main  
-```
 
-Проверка:
-```bash
-curl -s http://127.0.0.1:32000/
-```
-Документация Swagger будет по адресу:
-- `http://127.0.0.1:32000/docs`
+## Доступ к сервису
 
-Пример запроса на предсказание:
-```bash
-curl -s -X POST http://127.0.0.1:32000/api/predict/ \
-  -H 'Content-Type: application/json' \
-  -d '{
-        "data": [
-          {
-            "pickup_latitude": 40.7614327,
-            "pickup_longitude": -73.9798156,
-            "dropoff_latitude": 40.6413111,
-            "dropoff_longitude": -73.7781391,
-            "passenger_count": 2
-          }
-        ]
-      }'
-```
+Поля URL и READY не знаданы, поскольку используется port-forward в целях демонстрации. 
+Для доступа к сервису используется port-forward:
+kubectl port-forward -n r-mlops-k8s-9-1-3-22209764 pod/<POD_NAME> 8080:8080
 
-UI-форма (простая HTML):
-- `http://127.0.0.1:32000/predict/form/`
 
-### 3) Обучение модели
-Скрипт обучения читает датасет `src/uber.csv` и сохраняет модель в `src/service/model.pkl`.
+## Скриншоты результатов работы
 
-Быстрый запуск по умолчанию:
-```bash
-cd <path_to_project>
-source .venv/bin/activate
-python <path_to_project>/src/service/train_and_save_model.py
-```
 
-С указанием параметров:
-```bash
-python <path_to_project>/src/service/train_and_save_model.py \
-  --csv <path_to_project>/src/uber.csv \
-  --output <path_to_project>/src/service/model.pkl \
-  --test-size 0.2 \
-  --random-state 42
-```
-
-- **Ожидаемые колонки** в CSV: `pickup_latitude`, `pickup_longitude`, `dropoff_latitude`, `dropoff_longitude`, `passenger_count`, таргет — `fare_amount`.
-- После обучения сервис автоматически начнёт использовать обновлённый `model.pkl` при следующем запуске.
-
-### 4) Полезное
-- Установка зависимостей повторно: `pip install -r requirements.txt`
-- Запуск тестов: `pytest`
+### Интерфейс активного Airflow
+![Интерфейс активного Airflow](screenshots/af_ui.png)

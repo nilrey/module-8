@@ -1,6 +1,11 @@
 # Виртуальное окружение
 .venv/
 
+# Черновики
+draft/*
+/src/*
+README_orig.md
+
 # Кэш mypy
 .mypy_cache/
 .python-version
@@ -12,7 +17,7 @@ __pycache__/
 
 # Пикл-файлы моделей
 *.pkl
-*.onnx
+# *.onnx
 
 # Zip архивы
 *.zip
