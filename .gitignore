@@ -16,8 +16,8 @@ __pycache__/
 *$py.class
 
 # Пикл-файлы моделей
-*.pkl
-*.onnx
+# *.pkl
+# *.onnx
 
 # Zip архивы
 *.zip
